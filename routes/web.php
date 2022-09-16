@@ -49,12 +49,23 @@ Route::patch('announcement/update', function (\Illuminate\Http\Request $request)
     $inputWithValidationRule = [];
     foreach ($columnList as $column) {
         if (!in_array($column, ['id', 'created_at', 'updated_at'])) {
-            $inputWithValidationRule[$column] = 'required';
+            if ($column === 'image') {
+                $inputWithValidationRule[$column] = 'file|image|max:20000';
+            } else {
+                $inputWithValidationRule[$column] = 'required';
+            }
         }
     }
 
-    $data = $request->validate($inputWithValidationRule);
-
+    $data =\Illuminate\Support\Arr::except($request->validate($inputWithValidationRule), 'image');
+    $image = $request->file('image');
+    if ($image) {
+        if ($announcement->image && \Illuminate\Support\Facades\Storage::exists($announcement->image)) {
+            \Illuminate\Support\Facades\Storage::delete($announcement->image);
+        }
+        $name = "{$announcement->id}_".$image->getClientOriginalName();
+        $data['image'] = $image->storeAs('announcement', $name);
+    }
     $announcement->update($data);
 
     return redirect()->route('announcement.show')->with('success_message', 'Announcement was updated successfully!');

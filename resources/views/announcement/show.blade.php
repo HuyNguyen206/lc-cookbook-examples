@@ -4,10 +4,14 @@
             <span class="font-medium">Success alert!</span> {{$message}}
         </div>
     @endif
+
     <div class="bg-white rounded-md border my-8 mx-40">
         @if($announcement)
         <div class="content">
             <h2 class="text-2xl font-semibold w-full bg-purple-400 text-center text-white py-2" style="color: {{$announcement->titleColor}}">{{$announcement->titleText}}</h2>
+            @if($announcement->image)
+                <img alt="announcement-image" src="{{\Illuminate\Support\Facades\Storage::url($announcement->image)}}">
+            @endif
             <div class="text-gray-600 px-5 py-6">
                 {!! old('content', $announcement->content) !!}
             </div>

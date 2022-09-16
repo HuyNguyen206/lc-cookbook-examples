@@ -1,8 +1,18 @@
 <x-app-layout>
-    {{$errors}}
+    @if($errors->any())
+        <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
+            <span class="font-medium">Danger alert!</span>
+            <ul>
+                @foreach($errors->all() as $error)
+                    <li>{{$error}}</li>
+                @endforeach
+            </ul>
+
+        </div>
+    @endif
     <div class="bg-white rounded-md border my-8 mx-40 p-4">
         <h2 class="mb-2 font-bold text-xl">Edit announcement</h2>
-        <form id="formAnnoucement" method="post" action="{{route('announcement.update')}}">
+        <form enctype="multipart/form-data" id="formAnnoucement" method="post" action="{{route('announcement.update')}}">
             @csrf
             @method('patch')
             <div class="grid gap-6 mb-6 md:grid-cols-2">
@@ -20,6 +30,14 @@
                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                         <label for="default-radio-2" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">No</label>
                     </div>
+                </div>
+
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300" for="file_input">Upload file</label>
+                    <input name="image" accept="image/*" class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file">
+                    @if($announcement->image)
+                        <img class="w-40" alt="announcement-image" src="{{\Illuminate\Support\Facades\Storage::url($announcement->image)}}">
+                    @endif
                 </div>
 
                 <div>
@@ -83,7 +101,6 @@
         </form>
     </div>
     @push('scripts')
-        !-- Include the Quill library -->
         <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
         <script>
             var quill = new Quill('#editor', {
