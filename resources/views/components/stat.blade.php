@@ -1,3 +1,7 @@
+@props([
+'type',
+'total'
+])
 <div class="bg-white shadow-md rounded-lg px-4 py-6">
     <div class="flex justify-between items-center">
         <h4 class="text-gray-500 font-medium">{{$type}}</h4>
