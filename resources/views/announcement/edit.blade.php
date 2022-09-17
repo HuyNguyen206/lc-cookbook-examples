@@ -12,7 +12,8 @@
     @endif
     <div class="bg-white rounded-md border my-8 mx-40 p-4">
         <h2 class="mb-2 font-bold text-xl">Edit announcement</h2>
-        <form enctype="multipart/form-data" id="formAnnoucement" method="post" action="{{route('announcement.update')}}">
+        <form enctype="multipart/form-data" id="formAnnoucement" method="post"
+              action="{{route('announcement.update')}}">
             @csrf
             @method('patch')
             <div class="grid gap-6 mb-6 md:grid-cols-2">
@@ -33,10 +34,14 @@
                 </div>
 
                 <div>
-                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300" for="file_input">Upload file</label>
-                    <input name="image" accept="image/*" class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300" for="file_input">Upload
+                        file</label>
+                    <input name="image" accept="image/*"
+                           class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                           id="file_image" type="file">
                     @if($announcement->image)
-                        <img class="w-40" alt="announcement-image" src="{{\Illuminate\Support\Facades\Storage::url($announcement->image)}}">
+                        <img class="w-40" alt="announcement-image"
+                             src="{{\Illuminate\Support\Facades\Storage::url($announcement->image)}}">
                     @endif
                 </div>
 
@@ -102,6 +107,11 @@
     </div>
     @push('scripts')
         <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+            <script src="https://unpkg.com/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.js"></script>
+            <script src="https://unpkg.com/filepond-plugin-image-transform/dist/filepond-plugin-image-transform.js"></script>
+        <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+            <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+            <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
         <script>
             var quill = new Quill('#editor', {
                 theme: 'snow',
@@ -116,12 +126,40 @@
                 document.querySelector('#content').value = html
                 form.submit()
             })
+
+            // Register the plugin
+            FilePond.registerPlugin(FilePondPluginImagePreview);
+            FilePond.registerPlugin(FilePondPluginFileValidateType);
+            FilePond.registerPlugin(FilePondPluginImageResize);
+            FilePond.registerPlugin(FilePondPluginImageTransform);
+            // Get a reference to the file input element
+            const inputElement = document.querySelector('#file_image');
+
+            // Create a FilePond instance
+            const pond = FilePond.create(inputElement, {
+                imageResizeTargetWidth: 800,
+                imageResizeMode: 'contain',
+                imageResizeUpscale: false,
+                server: {
+                    url: '{{route('upload-image')}}',
+                    headers:{
+                        'X-CSRF-TOKEN' : '{{csrf_token()}}'
+                    }
+                }
+            });
+
+
         </script>
     @endpush
 
     @push('styles')
         <!-- Include stylesheet -->
         <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+        <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet"/>
+        <link
+            href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"
+            rel="stylesheet"
+        />
     @endpush
 </x-app-layout>
 

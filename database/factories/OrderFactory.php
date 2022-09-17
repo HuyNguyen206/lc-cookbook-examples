@@ -17,7 +17,7 @@ class OrderFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => $this->faker->numberBetween(1, 1000),
+            'user_id' => $this->faker->numberBetween(1, 10),
             'total' => $this->faker->numberBetween(1000, 1000000),
             'created_at' => $this->faker->dateTimeBetween('-5 years', now(), config('app.timezone')),
         ];
