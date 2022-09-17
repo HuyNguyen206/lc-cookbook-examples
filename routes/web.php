@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Image;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,8 +65,18 @@ Route::patch('announcement/update', function (\Illuminate\Http\Request $request)
         if ($announcement->image && \Illuminate\Support\Facades\Storage::exists($announcement->image)) {
             \Illuminate\Support\Facades\Storage::delete($announcement->image);
         }
+
         $name = "{$announcement->id}_".$image->getClientOriginalName();
-        $data['image'] = $image->storeAs('announcement', $name);
+        $path = public_path("storage/announcement/$name");
+
+        $image = \Intervention\Image\Facades\Image::make($image);
+        $image->resize(600, null, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        })->save($path);
+
+//        $name = "{$announcement->id}_".$image->getClientOriginalName();
+        $data['image'] = "announcement/$name";
     }
     $announcement->update($data);
 
