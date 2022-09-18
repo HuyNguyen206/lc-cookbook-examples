@@ -70,7 +70,7 @@ return [
     */
 
     // 'timezone' => 'UTC',
-    'timezone' => 'America/Toronto',
+    'timezone' => 'Asia/Ho_Chi_Minh',
 
     /*
     |--------------------------------------------------------------------------
