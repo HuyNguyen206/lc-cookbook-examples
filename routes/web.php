@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -32,7 +33,7 @@ Route::get('stats', function () {
 Route::get('announcement/show', function () {
     $announcement = \App\Models\Announcement::first();
     abort_if($announcement === null, 404);
-    abort_if(! $announcement->isActive === null, 403);
+    abort_if(!$announcement->isActive === null, 403);
 
     return view('announcement.show', compact('announcement'));
 })->name('announcement.show');
@@ -40,7 +41,7 @@ Route::get('announcement/show', function () {
 Route::get('announcement/edit', function () {
     $announcement = \App\Models\Announcement::first();
     abort_if($announcement === null, 404);
-    abort_if(! $announcement->isActive === null, 403);
+    abort_if(!$announcement->isActive === null, 403);
 
     return view('announcement.edit', compact('announcement'));
 })->name('announcement.edit');
@@ -48,12 +49,12 @@ Route::get('announcement/edit', function () {
 Route::patch('announcement/update', function (\Illuminate\Http\Request $request) {
     $announcement = \App\Models\Announcement::first();
     abort_if($announcement === null, 404);
-    abort_if(! $announcement->isActive === null, 403);
+    abort_if(!$announcement->isActive === null, 403);
     $columnList = \Illuminate\Support\Facades\Schema::getColumnListing((new \App\Models\Announcement())->getTable());
     $inputWithValidationRule = [];
     foreach ($columnList as $column) {
         if (!in_array($column, ['id', 'created_at', 'updated_at'])) {
-         if ($column === 'image') {
+            if ($column === 'image') {
                 $inputWithValidationRule[$column] = 'string';
             } else {
                 $inputWithValidationRule[$column] = 'required';
@@ -61,7 +62,7 @@ Route::patch('announcement/update', function (\Illuminate\Http\Request $request)
         }
     }
 
-    $data =\Illuminate\Support\Arr::except($request->validate($inputWithValidationRule), 'image');
+    $data = \Illuminate\Support\Arr::except($request->validate($inputWithValidationRule), 'image');
     $image = $request->image;
     if ($image) {
         if ($announcement->image && \Illuminate\Support\Facades\Storage::exists($announcement->image)) {
@@ -92,7 +93,7 @@ Route::post('upload-image', function (Request $request) {
     ]);
 
     $image = $request->file('image');
-    $name = Str::uuid().'_'.$image->getClientOriginalName();
+    $name = Str::uuid() . '_' . $image->getClientOriginalName();
     $path = "tmp/announcement";
     $uniquePath = $image->storeAs($path, $name);
 
@@ -103,3 +104,11 @@ Route::post('upload-image', function (Request $request) {
 Route::get('songs', function () {
     return view('drag-drop');
 })->name('songs');
+
+Route::get('http-client', function () {
+    $response = Http::get("https://api.github.com/users/HuyNguyen206/repos?sort=created&per_page=10");
+    $openMapKey = config('app.open_weather_map_key');
+    $weatherResponse = Http::get("https://api.openweathermap.org/data/2.5/weather?id=1566083&unit=metric&appid=$openMapKey");
+
+    return view('repo', ['repos' => $response->json(), 'weather' => $weatherResponse->json()]);
+});

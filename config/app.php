@@ -72,6 +72,8 @@ return [
     // 'timezone' => 'UTC',
     'timezone' => 'America/Toronto',
 
+    'open_weather_map_key' => env('OPEN_WEATHER_MAP_KEY'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
