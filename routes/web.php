@@ -99,3 +99,7 @@ Route::post('upload-image', function (Request $request) {
     return $uniquePath;
 
 })->name('upload-image');
+
+Route::get('songs', function () {
+    return view('drag-drop');
+})->name('songs');

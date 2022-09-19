@@ -35,6 +35,7 @@
                 <a href="/charts" class="hover:text-gray-200">Charts</a>
                 <a href="{{route('announcement.show')}}" class="hover:text-gray-200">Announcement</a>
                 <a href="{{route('announcement.edit')}}" class="hover:text-gray-200">Edit announcement</a>
+                <a href="{{route('songs')}}" class="hover:text-gray-200">Song</a>
             </nav>
         </div>
 
