@@ -110,5 +110,8 @@ Route::get('http-client', function () {
     $openMapKey = config('app.open_weather_map_key');
     $weatherResponse = Http::get("https://api.openweathermap.org/data/2.5/weather?id=1566083&unit=metric&appid=$openMapKey");
 
-    return view('repo', ['repos' => $response->json(), 'weather' => $weatherResponse->json()]);
+    $movieKey = config('app.movie_db_key');
+    $movieResponse = Http::get("https://api.themoviedb.org/3/movie/popular?api_key=$movieKey&language=en-US&page=1");
+    dump($movieResponse);
+    return view('repo', ['repos' => $response->json(), 'weather' => $weatherResponse->json(), 'movies' => $movieResponse->json()]);
 });

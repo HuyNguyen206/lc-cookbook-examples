@@ -25,7 +25,21 @@
             @endforeach
             </tbody>
         </table>
+        <div class="mt-4 bg-white p-4">
+            <h3 class="text-xl font-semibold">Weather from API</h3>
+            <div>
+                <div>Temperature: {{ $weather['main']['temp'] }}</div>
+                <div>Weather: {{ $weather['weather'][0]['description'] }}</div>
+            </div>
+        </div>
+        <div class="mt-4 bg-white p-4">
+            <h3 class="text-xl font-semibold">Movie from API</h3>
+            @foreach($movies['results'] as $movie)
+            <div class="mt-2">
+                <div>title: {{ $movie['title'] }}</div>
+                <div>overview: {{ $movie['overview'] }}</div>
+            </div>
+            @endforeach
+        </div>
     </div>
-
-
 </x-app-layout>

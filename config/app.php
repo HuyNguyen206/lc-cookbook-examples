@@ -74,6 +74,8 @@ return [
 
     'open_weather_map_key' => env('OPEN_WEATHER_MAP_KEY'),
 
+    'movie_db_key' => env('MOVIE_DB_KEY'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
