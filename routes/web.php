@@ -106,12 +106,19 @@ Route::get('songs', function () {
 })->name('songs');
 
 Route::get('http-client', function () {
-    $response = Http::get("https://api.github.com/users/HuyNguyen206/repos?sort=created&per_page=10");
-    $openMapKey = config('app.open_weather_map_key');
-    $weatherResponse = Http::get("https://api.openweathermap.org/data/2.5/weather?id=1566083&unit=metric&appid=$openMapKey");
+//    $response = Http::get("https://api.github.com/users/HuyNguyen206/repos?sort=created&per_page=10");
 
+    $openMapKey = config('app.open_weather_map_key');
+//    $weatherResponse = Http::get("https://api.openweathermap.org/data/2.5/weather?id=1566083&unit=metric&appid=$openMapKey");
+//    $weatherResponse = Http::weatherApi()->get("/data/2.5/weather?id=1566083&unit=metric&appid=$openMapKey");
     $movieKey = config('app.movie_db_key');
-    $movieResponse = Http::get("https://api.themoviedb.org/3/movie/popular?api_key=$movieKey&language=en-US&page=1");
-    dump($movieResponse);
-    return view('repo', ['repos' => $response->json(), 'weather' => $weatherResponse->json(), 'movies' => $movieResponse->json()]);
+//    $movieResponse = Http::get("https://api.themoviedb.org/3/movie/popular?api_key=$movieKey&language=en-US&page=1");
+
+    $response = Http::pool(fn(\Illuminate\Http\Client\Pool $pool) => [
+        $pool->as('repo')->get("https://api.github.com/users/HuyNguyen206/repos?sort=created&per_page=10"),
+        $pool->as('weather')->get("https://api.openweathermap.org/data/2.5/weather?id=1566083&unit=metric&appid=$openMapKey"),
+        $pool->as('movies')->get("https://api.themoviedb.org/3/movie/popular?api_key=$movieKey&language=en-US&page=1"),
+    ]);
+
+    return view('repo', ['repos' => $response['repo']->json(), 'weather' => $response['weather']->json(), 'movies' => $response['movies']->json()]);
 });
